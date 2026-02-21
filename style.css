@@ -101,3 +101,41 @@ nav ul li { margin-left: 20px; }
     transform: translateY(-10px); /* حركة طلوع لفوق لما تلمسها بالماوس */
     border-bottom: 4px solid #2a9d8f;
 }
+
+/* تنسيقات خاصة للموبايل فقط */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column; /* اللوجو والروابط يبقوا فوق بعض */
+        gap: 10px;
+    }
+
+    nav ul {
+        padding: 0;
+        justify-content: center;
+    }
+
+    #hero h1 {
+        font-size: 28px; /* تصغير العنوان الرئيسي */
+        padding: 0 10px;
+    }
+
+    #hero p {
+        font-size: 16px;
+        padding: 0 20px;
+    }
+
+    .modal-content {
+        width: 90%; /* الفورم تاخد 90% من عرض الموبايل بدل ما تطلع بره */
+        margin: 20% auto;
+        padding: 20px;
+    }
+
+    .grid {
+        flex-direction: column; /* الكروت تبقى تحت بعض مش جنب بعض */
+        align-items: center;
+    }
+
+    .card {
+        width: 80%; /* الكارت يبقى عريض ومناسب للموبايل */
+    }
+}
