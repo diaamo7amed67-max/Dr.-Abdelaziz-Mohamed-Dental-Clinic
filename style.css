@@ -105,6 +105,17 @@ nav ul li { margin-left: 20px; }
 /* تنسيقات خاصة للموبايل فقط */
 @media (max-width: 768px) {
     nav {
+    flex-direction: column; 
+    padding: 10px;
+}
+nav ul {
+    flex-direction: row; /* يخليهم جنب بعض في سطر واحد */
+    flex-wrap: wrap; 
+    justify-content: center;
+    gap: 15px; /* مسافة بين اللينكات */
+    margin-top: 10px;
+}
+    nav {
         flex-direction: column; /* اللوجو والروابط يبقوا فوق بعض */
         gap: 10px;
     }
@@ -115,14 +126,14 @@ nav ul li { margin-left: 20px; }
     }
 
     #hero h1 {
-        font-size: 28px; /* تصغير العنوان الرئيسي */
-        padding: 0 10px;
-    }
-
-    #hero p {
-        font-size: 16px;
-        padding: 0 20px;
-    }
+    font-size: 1.8rem; /* تصغير الخط للموبايل */
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+#hero p {
+    font-size: 1rem;
+    padding: 0 20px;
+}
 
     .modal-content {
         width: 90%; /* الفورم تاخد 90% من عرض الموبايل بدل ما تطلع بره */
@@ -139,3 +150,12 @@ nav ul li { margin-left: 20px; }
         width: 80%; /* الكارت يبقى عريض ومناسب للموبايل */
     }
 }
+
+.whatsapp-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    z-index: 1000;
+}
+
