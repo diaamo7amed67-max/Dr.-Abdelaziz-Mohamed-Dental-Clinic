@@ -1,0 +1,142 @@
+[style.css](https://github.com/user-attachments/files/25459042/style.css)
+body {
+    font-family: 'Cairo', sans-serif;
+}
+
+header {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+nav {
+    display: flex;
+    justify-content: space-around; /* بيوزع العناصر بمسافات متساوية */
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo { font-size: 24px; font-weight: bold; color: #2a9d8f; }
+.logo span { color: #264653; }
+
+nav ul { list-style: none; display: flex; }
+nav ul li { margin-left: 20px; }
+
+#hero {
+    height: 60vh;
+    background: linear-gradient(rgba(42, 157, 143, 0.7), rgba(38, 70, 83, 0.7)), 
+                url('https://images.unsplash.com/photo-1629909613654-28e377c37b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 25px;
+    background: #e76f51;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* تصميم النافذة المنبثقة */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    text-align: center;
+    position: relative;
+    direction: rtl;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px; left: 20px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#bookingForm input, #bookingForm select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* عشان الـ padding ميخربش العرض */
+}
+
+.grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px;
+    flex-wrap: wrap; /* عشان لو الشاشة صغرت ينزلوا تحت بعض */
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 250px;
+    text-align: center;
+    transition: 0.3s; /* عشان حركة الـ Hover */
+}
+
+.card:hover {
+    transform: translateY(-10px); /* حركة طلوع لفوق لما تلمسها بالماوس */
+    border-bottom: 4px solid #2a9d8f;
+}
+
+/* تنسيقات خاصة للموبايل فقط */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column; /* اللوجو والروابط يبقوا فوق بعض */
+        gap: 10px;
+    }
+
+    nav ul {
+        padding: 0;
+        justify-content: center;
+    }
+
+    #hero h1 {
+        font-size: 28px; /* تصغير العنوان الرئيسي */
+        padding: 0 10px;
+    }
+
+    #hero p {
+        font-size: 16px;
+        padding: 0 20px;
+    }
+
+    .modal-content {
+        width: 90%; /* الفورم تاخد 90% من عرض الموبايل بدل ما تطلع بره */
+        margin: 20% auto;
+        padding: 20px;
+    }
+
+    .grid {
+        flex-direction: column; /* الكروت تبقى تحت بعض مش جنب بعض */
+        align-items: center;
+    }
+
+    .card {
+        width: 80%; /* الكارت يبقى عريض ومناسب للموبايل */
+    }
+}
