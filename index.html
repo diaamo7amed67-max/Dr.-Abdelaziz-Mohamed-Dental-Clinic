@@ -41,8 +41,8 @@
         <span class="close-btn">&times;</span>
         <h2>احجز موعدك الآن</h2>
         <form id="bookingForm">
-            <input type="text" placeholder="اسمك بالكامل" required>
-            <input type="tel" placeholder="رقم الموبايل" required>
+           <input type="text" id="patientName" placeholder="اسمك بالكامل" required>
+<input type="tel" id="patientPhone" placeholder="رقم الموبايل" required>
             <select>
                 <option value="">اختر الخدمة</option>
                 <option value="cleaning">تنظيف وتبييض</option>
@@ -58,5 +58,51 @@
 <a href="https://wa.me/201234567890" class="whatsapp-btn" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
 </a>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+<script>
+  // بيانات الربط الخاصة بمشروعك (اللي كانت في الصورة رقم 8)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhVNIOiUh_xf8EHV1_HHXkzbV3Fa9saac",
+    authDomain: "dr-abdelaziz-clinic.firebaseapp.com",
+    projectId: "dr-abdelaziz-clinic",
+    storageBucket: "dr-abdelaziz-clinic.firebasestorage.app",
+    messagingSenderId: "1072818344694",
+    appId: "1:1072818344694:web:dc0ab5e880bcc3ecfc12d7"
+  };
+
+  // تشغيل Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // كود إرسال الحجز
+  // تأكد أن الـ id بتاع الفورم هو 'bookingForm'
+  const bookingForm = document.getElementById('bookingForm'); 
+  
+  if(bookingForm) {
+      bookingForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          // جلب البيانات من الخانات (تأكد من وجود الـ id دي في الـ HTML عندك)
+          const name = document.getElementById('patientName').value;
+const phone = document.getElementById('patientPhone').value;
+const service = document.querySelector('select').value;
+          // إرسال البيانات
+          database.ref('bookings').push({
+              patientName: name,
+              patientPhone: phone,
+              appointmentDate: date,
+             service: service,
+          }).then(() => {
+              alert("تم إرسال الحجز بنجاح يا دكتور!");
+              bookingForm.reset();
+          }).catch((error) => {
+              alert("خطأ في الإرسال، حاول تاني.");
+              console.error(error);
+          });
+      });
+  }
+</script>
 </body>
 </html>
