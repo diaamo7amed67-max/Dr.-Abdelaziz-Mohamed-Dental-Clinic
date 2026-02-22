@@ -243,3 +243,36 @@ nav ul li a:hover {
 .btn-confirm:hover {
     background: #264653;
 }
+
+/* تنسيق أزرار المواعيد */
+.slot-btn {
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    padding: 10px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: #264653;
+}
+
+.slot-btn:hover {
+    border-color: #2a9d8f;
+    background: #f0fdfa;
+}
+
+.slot-btn.selected {
+    background: #2a9d8f !important;
+    color: white !important;
+    border-color: #264653 !important;
+    transform: scale(1.05);
+}
+
+/* تنسيق حاوية المواعيد */
+#timeSlots {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px dashed #cbd5e0;
+}

@@ -45,12 +45,21 @@
             <form id="bookingForm">
                 <input type="text" id="patientName" placeholder="اسم المريض بالكامل" required>
                 <input type="tel" id="patientPhone" placeholder="رقم الموبايل" required>
-                <select id="service" required>
-                    <option value="">اختر الخدمة المطلوبة</option>
-                    <option value="تبييض">تنظيف وتبييض</option>
-                    <option value="زراعة">زراعة أسنان</option>
-                    <option value="تقويم">تقويم أسنان</option>
-                </select>
+             <select id="serviceSelect" onchange="generateSlots()" required style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd; font-family: 'Cairo';">
+    <option value="">اختر الخدمة المطلوبة</option>
+    <option value="كشف" data-duration="15">كشف (15 دقيقة)</option>
+    <option value="متابعة كشف" data-duration="10">متابعة كشف (10 دقائق)</option>
+    <option value="عمل تقويم" data-duration="35">عمل تقويم (35 دقيقة)</option>
+    <option value="متابعة تقويم" data-duration="20">متابعة تقويم (20 دقيقة)</option>
+    <option value="تنظيف وتبييض" data-duration="30">تنظيف وتبييض (30 دقيقة)</option>
+    <option value="زراعة اسنان" data-duration="40">زراعة اسنان (40 دقيقة)</option>
+</select>
+
+<div id="slotsContainer" style="margin-top: 15px; display: none; text-align: right;">
+    <label style="font-weight: bold; color: #264653;">اختر الموعد المتاح (من 1 ظهراً لـ 10 مساءً):</label>
+    <div id="timeSlots" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+        </div>
+</div>
                 <button type="submit" class="btn" style="width:100%; margin-top:15px;">تأكيد الإرسال</button>
             </form>
         </div>
