@@ -1,63 +1,66 @@
-// 1. التعامل مع نافذة الحجز (Modal)
-const modal = document.getElementById("bookingModal");
-const btn = document.querySelector(".btn"); // زرار الاحجز الآن في الهيرو
-const closeBtn = document.querySelector(".close-btn");
-
-// فتح النافذة عند الضغط على الزرار
-btn.onclick = function() {
-    modal.style.display = "block";
-}
-
-// قفل النافذة عند الضغط على (X)
-closeBtn.onclick = function() {
-    modal.style.display = "none";
-}
-
-// قفل النافذة لو المستخدم داس في أي مكان بره الصندوق
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-// 2. رسالة تأكيد عند إرسال الفورم
-document.getElementById("bookingForm").onsubmit = function(e) {
-    e.preventDefault();
-    alert("تم استلام طلبك بنجاح! سيتواصل معك فريق العيادة قريباً.");
-    modal.style.display = "none";
-}
-
-// استدعاء مكتبات Firebase (حطهم في الـ Head أو قبل الـ script بتاعك)
-// <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-// <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-
+// 1. إعدادات Firebase الكاملة
 const firebaseConfig = {
-  apiKey: "AIzaSyAhVNIOiUh_xf8EHV1_HHXkzbV3Fa9saac",
-  authDomain: "dr-abdelaziz-clinic.firebaseapp.com",
-  projectId: "dr-abdelaziz-clinic",
-  storageBucket: "dr-abdelaziz-clinic.firebasestorage.app",
-  messagingSenderId: "1072818344694",
-  appId: "1:1072818344694:web:dc0ab5e880bcc3ecfc12d7"
+    apiKey: "AIzaSyAhVNIOiUh_xf8EHV1_HHXkzbV3Fa9saac",
+    authDomain: "dr-abdelaziz-clinic.firebaseapp.com",
+    projectId: "dr-abdelaziz-clinic",
+    storageBucket: "dr-abdelaziz-clinic.firebasestorage.app",
+    messagingSenderId: "1072818344694",
+    appId: "1:1072818344694:web:dc0ab5e880bcc3ecfc12d7",
+    databaseURL: "https://dr-abdelaziz-clinic-default-rtdb.firebaseio.com"
 };
 
-firebase.initializeApp(firebaseConfig);
+// 2. تشغيل Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const database = firebase.database();
 
-document.getElementById('bookingForm').addEventListener('submit', (e) => {
-  e.preventDefault();
+// 3. وظائف فتح وقفل نافذة الحجز (Modal)
+function openModal() {
+    document.getElementById('bookingModal').style.display = 'block';
+}
 
-  const name = document.getElementById('patientName').value;
-  const phone = document.getElementById('patientPhone').value;
-  const service = document.querySelector('select').value;
+function closeModal() {
+    document.getElementById('bookingModal').style.display = 'none';
+}
 
-  database.ref('bookings').push({
-    name: name,
-    phone: phone,
-    service: service,
-    date: new Date().toLocaleString()
-  }).then(() => {
-    alert("تم إرسال الحجز بنجاح يا دكتور!");
-    document.getElementById('bookingForm').reset();
-  });
-});
+// 4. وظيفة قفل رسالة النجاح
+function closeSuccess() {
+    document.getElementById('successMessage').style.display = 'none';
+}
 
+// 5. كود إرسال البيانات لـ Firebase
+const bookingForm = document.getElementById('bookingForm');
+if (bookingForm) {
+    bookingForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('patientName').value;
+        const phone = document.getElementById('patientPhone').value;
+        const service = document.getElementById('service').value;
+
+        database.ref('bookings').push({
+            patientName: name,
+            patientPhone: phone,
+            service: service,
+            timeSent: new Date().toLocaleString()
+        }).then(() => {
+            // إخفاء نافذة الحجز
+            closeModal();
+            // إظهار رسالة النجاح الشيك اللي عملناها في HTML
+            document.getElementById('successMessage').style.display = 'flex';
+            // إعادة تعيين الفورم
+            bookingForm.reset();
+        }).catch((error) => {
+            alert("عذراً، حدث خطأ أثناء الإرسال: " + error.message);
+        });
+    });
+}
+
+// قفل النوافذ عند الضغط خارجها
+window.onclick = function(event) {
+    const bookingModal = document.getElementById('bookingModal');
+    const successMessage = document.getElementById('successMessage');
+    if (event.target == bookingModal) closeModal();
+    if (event.target == successMessage) closeSuccess();
+}

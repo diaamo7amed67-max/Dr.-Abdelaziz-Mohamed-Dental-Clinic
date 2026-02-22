@@ -1,108 +1,72 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عيادة الابتسامة المشرقة - دكتور أسنان</title>
+    <title>دكتور عبدالعزيز محمد - لطب الأسنان</title>
     <link rel="stylesheet" href="style.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 </head>
 <body>
+
     <header>
+        <div class="logo">د. عبدالعزيز<span> محمد</span></div>
         <nav>
-            <div class="logo">Bright<span>Smile</span></div>
             <ul>
-                <li><a href="#home">الرئيسية</a></li>
+                <li><a href="#hero">الرئيسية</a></li>
                 <li><a href="#services">خدماتنا</a></li>
-                <li><a href="#contact">احجز الآن</a></li>
             </ul>
         </nav>
     </header>
 
     <section id="hero">
         <div class="hero-content">
-            <h1>ابتسامتك هي واجهتك الأجمل</h1>
-            <p>أحدث تقنيات طب الأسنان بأيدي خبراء نهتم برحتك أولاً.</p>
-            <button class="btn">احجز كشفك الآن</button>
+            <h1>عيادة الدكتور عبدالعزيز محمد</h1>
+            <p>نصنع لك الابتسامة التي تستحقها بأحدث التقنيات العالمية</p>
+            <button class="btn" onclick="openModal()">احجز موعدك الآن</button>
         </div>
     </section>
 
     <section id="services">
-        <h2>خدمات العيادة</h2>
+        <h2>خدماتنا المميزة</h2>
         <div class="grid">
-            <div class="card">🦷 تبييض الأسنان</div>
-            <div class="card">💎 زراعة الأسنان</div>
-            <div class="card">✨ تقويم الأسنان</div>
+            <div class="card"><h3>🦷</h3><br>تنظيف وتبييض الأسنان</div>
+            <div class="card"><h3>💎</h3><br>زراعة وتجميل الأسنان</div>
+            <div class="card"><h3>✨</h3><br>تقويم الأسنان الحديث</div>
         </div>
     </section>
+
     <div id="bookingModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>احجز موعدك الآن</h2>
-        <form id="bookingForm">
-           <input type="text" id="patientName" placeholder="اسمك بالكامل" required>
-<input type="tel" id="patientPhone" placeholder="رقم الموبايل" required>
-            <select>
-                <option value="">اختر الخدمة</option>
-                <option value="cleaning">تنظيف وتبييض</option>
-                <option value="implants">زراعة أسنان</option>
-                <option value="ortho">تقويم</option>
-            </select>
-            <button type="submit" class="btn">إرسال الطلب</button>
-        </form>
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 style="color:#264653; margin-bottom:10px;">طلب حجز موعد</h2>
+            <form id="bookingForm">
+                <input type="text" id="patientName" placeholder="اسم المريض بالكامل" required>
+                <input type="tel" id="patientPhone" placeholder="رقم الموبايل" required>
+                <select id="service" required>
+                    <option value="">اختر الخدمة المطلوبة</option>
+                    <option value="تبييض">تنظيف وتبييض</option>
+                    <option value="زراعة">زراعة أسنان</option>
+                    <option value="تقويم">تقويم أسنان</option>
+                </select>
+                <button type="submit" class="btn" style="width:100%; margin-top:15px;">تأكيد الإرسال</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<script src="script.js"></script>
-<a href="https://wa.me/201234567890" class="whatsapp-btn" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-</a>
-<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-
-<script>
-  // بيانات الربط الخاصة بمشروعك (اللي كانت في الصورة رقم 8)
-  const firebaseConfig = {
-    apiKey: "AIzaSyAhVNIOiUh_xf8EHV1_HHXkzbV3Fa9saac",
-    authDomain: "dr-abdelaziz-clinic.firebaseapp.com",
-    projectId: "dr-abdelaziz-clinic",
-    storageBucket: "dr-abdelaziz-clinic.firebasestorage.app",
-    messagingSenderId: "1072818344694",
-    appId: "1:1072818344694:web:dc0ab5e880bcc3ecfc12d7"
-  };
-
-  // تشغيل Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  // كود إرسال الحجز
-  // تأكد أن الـ id بتاع الفورم هو 'bookingForm'
-  const bookingForm = document.getElementById('bookingForm'); 
-  
-  if(bookingForm) {
-      bookingForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-
-          // جلب البيانات من الخانات (تأكد من وجود الـ id دي في الـ HTML عندك)
-          const name = document.getElementById('patientName').value;
-const phone = document.getElementById('patientPhone').value;
-const service = document.querySelector('select').value;
-          // إرسال البيانات
-          database.ref('bookings').push({
-              patientName: name,
-              patientPhone: phone,
-              appointmentDate: date,
-             service: service,
-          }).then(() => {
-              alert("تم إرسال الحجز بنجاح يا دكتور!");
-              bookingForm.reset();
-          }).catch((error) => {
-              alert("خطأ في الإرسال، حاول تاني.");
-              console.error(error);
-          });
-      });
-  }
-</script>
+    <a href="https://wa.me/201064829455" class="whatsapp-btn" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:100%;">
+    </a>
+<div id="successMessage" class="success-popup">
+        <div class="popup-content">
+            <div class="icon-circle">✅</div>
+            <h2> تم استلام طلبك بنجاح </h2>
+            <p>شكراً لثقتك بنا. تم تسجيل بياناتك وسيقوم فريق العيادة بالتواصل معك في أقرب وقت لتأكيد الموعد.</p>
+            <button onclick="closeSuccess()" class="btn-confirm">شكراً</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
