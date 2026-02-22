@@ -2,39 +2,88 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة تحكم العيادة - د. عبدالعزيز</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>لوحة التحكم الاحترافية - د. عبدالعزيز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #f0f4f8; padding: 20px; direction: rtl; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { color: #2a9d8f; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
-        th { background: #264653; color: white; }
-        tr:nth-child(even) { background: #f9f9f9; }
-        .btn-call { background: #2a9d8f; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; font-size: 14px; }
+        :root { --main-color: #2a9d8f; --dark-blue: #264653; --danger: #e76f51; }
+        body { font-family: 'Cairo', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .login-card { max-width: 400px; margin: 100px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group input { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid #ddd; font-family: 'Cairo'; box-sizing: border-box; }
+        .eye-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; }
+        .btn-main { background: var(--main-color); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.3s; }
+        .btn-main:hover { background: var(--dark-blue); }
+        
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--dark-blue); color: white; padding: 18px; text-align: right; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        .btn-delete { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 5px 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .btn-delete:hover { background: var(--danger); color: white; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>جدول حجوزات المرضى</h1>
-        <table id="bookingsTable">
-            <thead>
-                <tr>
-                    <th>اسم المريض</th>
-                    <th>رقم الموبايل</th>
-                    <th>الخدمة</th>
-                    <th>الوقت</th>
-                </tr>
-            </thead>
-            <tbody>
-                </tbody>
-        </table>
+
+    <div id="loginSection" class="login-card">
+        <h2 style="color: var(--dark-blue);">دخول الإدارة 🔒</h2>
+        <div class="input-group">
+            <input type="text" id="adminUser" placeholder="اسم المستخدم">
+        </div>
+        <div class="input-group">
+            <input type="password" id="adminPass" placeholder="كلمة السر">
+            <span class="eye-icon" onclick="togglePass()">👁️</span>
+        </div>
+        <button onclick="checkAuth()" class="btn-main">تسجيل الدخول</button>
+    </div>
+
+    <div id="adminContent" style="display:none;">
+        <div class="admin-header">
+            <h2 style="margin:0; color: var(--dark-blue);">لوحة الحجوزات 🦷</h2>
+            <button onclick="location.reload()" style="background:#eee; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">خروج ⬅️</button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المريض</th>
+                        <th>رقم التواصل</th>
+                        <th>الخدمة</th>
+                        <th>التاريخ والوقت</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsData"></tbody>
+            </table>
+        </div>
     </div>
 
     <script>
+        // الإعدادات
+        const correctUser = "admin"; 
+        const correctPass = "100200300"; 
+
+        function togglePass() {
+            const passInput = document.getElementById('adminPass');
+            passInput.type = passInput.type === 'password' ? 'text' : 'password';
+        }
+
+        function checkAuth() {
+            const u = document.getElementById('adminUser').value;
+            const p = document.getElementById('adminPass').value;
+            if(u === correctUser && p === correctPass) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadData();
+            } else {
+                Swal.fire({ icon: 'error', title: 'خطأ!', text: 'اسم المستخدم أو كلمة السر غير صحيحة', confirmButtonColor: '#2a9d8f' });
+            }
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyAhVNIOiUh_xf8EHV1_HHXkzbV3Fa9saac",
             authDomain: "dr-abdelaziz-clinic.firebaseapp.com",
@@ -47,21 +96,41 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        const tableBody = document.querySelector('#bookingsTable tbody');
-
-        database.ref('bookings').on('value', (snapshot) => {
-            tableBody.innerHTML = "";
-            snapshot.forEach((childSnapshot) => {
-                const data = childSnapshot.val();
-                const row = `<tr>
-                    <td>${data.patientName}</td>
-                    <td><a href="tel:${data.patientPhone}" class="btn-call">${data.patientPhone} 📞</a></td>
-                    <td>${data.service}</td>
-                    <td>${data.timeSent}</td>
-                </tr>`;
-                tableBody.insertAdjacentHTML('afterbegin', row);
+        function loadData() {
+            database.ref('bookings').on('value', (snapshot) => {
+                const tbody = document.getElementById('bookingsData');
+                tbody.innerHTML = "";
+                snapshot.forEach((child) => {
+                    const d = child.val();
+                    const key = child.key;
+                    tbody.innerHTML += `<tr>
+                        <td><b>${d.patientName}</b></td>
+                        <td><a href="tel:${d.patientPhone}" style="color:var(--main-color); text-decoration:none;">${d.patientPhone} 📞</a></td>
+                        <td><span style="background:#e9f5f4; padding:4px 8px; border-radius:5px;">${d.service}</span></td>
+                        <td style="font-size:13px;">${d.timeSent}</td>
+                        <td><button class="btn-delete" onclick="deleteRecord('${key}')">حذف</button></td>
+                    </tr>`;
+                });
             });
-        });
+        }
+
+        function deleteRecord(key) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "سيتم حذف بيانات الحجز نهائياً!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2a9d8f',
+                cancelButtonColor: '#e76f51',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    database.ref('bookings/' + key).remove();
+                    Swal.fire('تم الحذف!', 'تم مسح الحجز بنجاح.', 'success');
+                }
+            })
+        }
     </script>
 </body>
 </html>
