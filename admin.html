@@ -135,16 +135,28 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // جلب البيانات من Firebase
+     // جلب البيانات من Firebase وترتيبها حسب وقت الزيارة
         function loadData() {
             database.ref('bookings').on('value', (snapshot) => {
                 const tbody = document.getElementById('bookingsData');
                 tbody.innerHTML = "";
+                
+                let bookingsArray = [];
+                
+                // 1. تجميع البيانات في مصفوفة
                 snapshot.forEach((child) => {
                     const d = child.val();
                     const key = child.key;
-                    
-                    // استخدام الموعد المختار (appointmentTime) أو وقت الإرسال كاحتياط
+                    bookingsArray.push({ key, ...d });
+                });
+
+                // 2. دالة الترتيب (من الموعد المبكر للمتأخر)
+                bookingsArray.sort((a, b) => {
+                    return timeToMinutes(a.appointmentTime) - timeToMinutes(b.appointmentTime);
+                });
+
+                // 3. عرض البيانات بعد ترتيبها
+                bookingsArray.forEach((d) => {
                     const timeToShow = d.appointmentTime ? d.appointmentTime : d.timeSent;
 
                     tbody.innerHTML += `<tr>
@@ -152,10 +164,26 @@
                         <td><a href="tel:${d.patientPhone}" style="color:var(--main-color); text-decoration:none; font-weight:bold;">${d.patientPhone} 📞</a></td>
                         <td><span style="background:#e9f5f4; color:var(--dark-blue); padding:4px 10px; border-radius:20px; font-size:13px;">${d.service}</span></td>
                         <td style="font-weight:bold; color:var(--dark-blue);">${timeToShow}</td>
-                        <td><button class="btn-delete" onclick="deleteRecord('${key}')">حذف 🗑️</button></td>
+                        <td><button class="btn-delete" onclick="deleteRecord('${d.key}')">حذف 🗑️</button></td>
                     </tr>`;
                 });
             });
+        }
+
+        // دالة مساعدة لتحويل الوقت (مثلاً 1:30 م) إلى دقائق لترتيبها حسابياً
+        function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
+            const match = timeStr.match(/(\d+):(\d+)\s*(ص|م)/);
+            if (!match) return 0;
+            
+            let hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const period = match[3];
+
+            if (period === 'م' && hours !== 12) hours += 12;
+            if (period === 'ص' && hours === 12) hours = 0;
+
+            return hours * 60 + minutes;
         }
 
         // دالة الحذف الاحترافية

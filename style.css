@@ -157,6 +157,8 @@ nav ul li a:hover {
     max-width: 450px;
     text-align: center;
     position: relative;
+    max-height: 60vh;    /* بيخلي طول المربع 80% من طول الشاشه عشان ميهربش */
+    overflow-y: auto;    /* بيظهر شريط التمرير لو الكلام كتير */
 }
 
 .close-btn {
@@ -276,3 +278,4 @@ nav ul li a:hover {
     border-radius: 12px;
     border: 1px dashed #cbd5e0;
 }
+
